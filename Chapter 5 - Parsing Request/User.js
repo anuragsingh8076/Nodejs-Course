@@ -1,9 +1,8 @@
 
-const http = require('http');
 const fs = require('fs');
  
-const server = http.createServer((req, res) => {
-  console.log(req.url, req.method, req.headers);
+ const userRequestHandler = (req, res) => {
+  console.log(req.url, req.method);
   
   if (req.url === '/') {
          res.setHeader('Content-Type', 'text/html');
@@ -22,7 +21,26 @@ const server = http.createServer((req, res) => {
   res.write('</html>');
    return res.end();
   } else if (req.url.toLowerCase() === '/submit-details' && req.method == "POST") {
-     fs.writeFileSync('user.txt', 'Anurag Singh')
+     
+
+    const Body = [];
+  req.on('data', chunk => {
+    console.log(chunk);
+    Body.push(chunk);
+  });
+  req.on('end', () => {
+    const parsedBody = Buffer.concat(Body).toString();
+    console.log(parsedBody);
+    const params = new URLSearchParams(parsedBody);
+    // const jsonUbject = {};
+    // for (const [key, value] of params.entries()) {
+    //   jsonUbject[key] = value;
+    // }
+    const jsonUbject = Object.fromEntries(params);
+      console.log(jsonUbject);
+       fs.writeFileSync('user.txt', JSON.stringify(jsonUbject));
+  });
+   
      res.statusCode = 302;
      res.setHeader('Location', '/');
   }
@@ -35,10 +53,5 @@ const server = http.createServer((req, res) => {
   res.end();
  // process.exit();  // Stops event loop 
   
-});
-
-const PORT = 3001;
-server.listen(PORT, () => {
-  console.log(`Server running on address http://localhost:${PORT}`);
-  
-});
+};
+module.exports = userRequestHandler;
