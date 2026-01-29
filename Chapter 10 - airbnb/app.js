@@ -1,3 +1,6 @@
+//core Module
+const path = require('path');
+
 
 // External Module
 const express = require('express');
@@ -5,6 +8,7 @@ const express = require('express');
 //Local Module
 const UserRouter = require("./routes/userRouter");
 const hostRouter = require("./routes/hostRouter")
+const rootDir = require("./utils/pathUtil");
 
 const app = express();
 
@@ -12,9 +16,11 @@ const app = express();
 
 app.use(express.urlencoded());
 app.use(UserRouter);
-app.use(hostRouter);
+app.use(("/host"), hostRouter);
 
-
+app.use((req, res, next) => {
+  res.status(404).sendFile(path.join(rootDir, "views", "404.html"));
+})
 
  
 
