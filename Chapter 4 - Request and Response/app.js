@@ -3,6 +3,7 @@ const http = require('http');
  
 const server = http.createServer((req, res) => {
   console.log(req.url, req.method, req.headers);
+
   
   if (req.url === '/') {
          res.setHeader('Content-Type', 'text/html');
@@ -19,6 +20,7 @@ const server = http.createServer((req, res) => {
   res.write('</html>');
    return res.end();
   }
+
     res.setHeader('Content-Type', 'text/html');
   res.write('<html>');
   res.write('<head><title>Complete Coding</title></head>');
